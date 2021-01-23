@@ -1,4 +1,4 @@
-package io.jfermat.messages;
+package io.github.jfermat.messages;
 
 import java.util.*;
 
@@ -81,7 +81,6 @@ public final class MessagesUtils {
     public static Map<String, List<String>> messagesFormated(Locale locale) {
         return messagesFormat(null, locale);
     }
-
 
     public static Map<String, List<String>> messagesBundle() {
         return messagesBundle(DEFAULT_MESSAGE_BUNDLE, Locale.getDefault());

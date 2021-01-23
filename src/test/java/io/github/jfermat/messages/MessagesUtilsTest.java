@@ -1,6 +1,6 @@
-package io.jfermat.messages;
+package io.github.jfermat.messages;
 
-import io.jfermat.messages.model.ClassMessage;
+import io.github.jfermat.messages.model.ClassMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -106,6 +106,18 @@ public class MessagesUtilsTest {
     }
 
     @Test
+    public void addTwoCustom() {
+        MessagesUtils.clear();
+        String level = "custom";
+        MessagesUtils.add(level, new ClassMessage(THIS_IS_MESSAGE, level));
+        MessagesUtils.add(level, new ClassMessage("Other message"));
+        Map<String, List<String>> messages = MessagesUtils.messagesFormated();
+        assertFalse(messages.isEmpty());
+        assertEquals(1, messages.size());
+        assertEquals(2, messages.get(level).size());
+    }
+
+    @Test
     public void bundleDefault() {
         MessagesUtils.clear();
         String level = "bundle";
@@ -151,6 +163,31 @@ public class MessagesUtilsTest {
         assertEquals(1, messages.size());
         assertTrue(messages.containsKey(level));
         assertEquals("Este es otro mensaje otherBundleSpanish.", messages.get(level).get(0));
+    }
+
+    @Test
+    public void messageLocale() {
+        MessagesUtils.clear();
+        String level = "messageLocale";
+        MessagesUtils.add(level, new ClassMessage(THIS_IS_MESSAGE, level));
+        Map<String, List<String>> messages = MessagesUtils.messagesFormated(Locale.ENGLISH);
+        assertFalse(messages.isEmpty());
+        assertEquals(1, messages.size());
+        assertTrue(messages.containsKey(level));
+        assertEquals(String.format(THIS_IS_MESSAGE, level), messages.get(level).get(0));
+    }
+
+    @Test
+    public void messages() {
+        MessagesUtils.clear();
+        String level = "messageLocale";
+        MessagesUtils.add(level, new ClassMessage(THIS_IS_MESSAGE, level));
+        Map<String, List<Message>> messages = MessagesUtils.messages();
+        assertFalse(messages.isEmpty());
+        assertEquals(1, messages.size());
+        assertTrue(messages.containsKey(level));
+        assertEquals(THIS_IS_MESSAGE, messages.get(level).get(0).getMessage());
+        assertArrayEquals(new Object[]{level}, messages.get(level).get(0).getArgs());
     }
 
     private void assertMessage(String level) {
