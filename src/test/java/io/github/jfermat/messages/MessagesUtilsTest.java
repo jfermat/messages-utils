@@ -287,6 +287,7 @@ public class MessagesUtilsTest {
     @Test
     public void otherBundle() {
         MessagesUtils.clear();
+        MessagesUtils.withLocale(LOCALE_SPANISH);
         MessagesUtils.withBundle("i18n/other");
         MessagesUtils.addPropertyMessage("other, ","message.key", "más");
 
