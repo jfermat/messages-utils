@@ -1,201 +1,347 @@
 package io.github.jfermat.messages;
 
-import io.github.jfermat.messages.model.ClassMessage;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-@RunWith(JUnit4.class)
 public class MessagesUtilsTest {
 
-    private static final String THIS_IS_MESSAGE = "This is a %s message.";
-    private static final String BUNDLE_KEY = "message.key";
+    private static final Locale LOCALE_ENGLISH = Locale.forLanguageTag("en");
+    private static final Locale LOCALE_SPANISH = Locale.forLanguageTag("es");
 
-    @Test
-    public void addPrimary() {
-        MessagesUtils.clear();
-        String level = "primary";
-        MessagesUtils.addPrimary(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+    private static final String LEVEL_PRIMARY = "primary";
+    private static final String LEVEL_SECONDARY = "secondary";
+    private static final String LEVEL_SUCCESS = "success";
+    private static final String LEVEL_DANGER = "danger";
+    private static final String LEVEL_WARNING = "warning";
+    private static final String LEVEL_INFO = "info";
+    private static final String LEVEL_LIGHT = "light";
+    private static final String LEVEL_DARK = "dark";
+    private static final String LEVEL_MUTED = "muted";
+    private static final String LEVEL_WHITE = "white";
+
+    public static final String FIRST = "first";
+    public static final String SECOND = "second";
+
+    public static final String SIMPLE_MESSAGE = "Simple message.";
+    public static final String FORMATTED_MESSAGE = "Formatted %s message.";
+    public static final String FROM_CLASS_MESSAGE_LEVEL = "From class Message. Level %s.";
+    public static final String THIS_IS_FIRST_MESSAGE_FROM_LEVEL = "This is first message from level %s.";
+    public static final String THIS_IS_A_SECOND_MESSAGE_FROM_LEVEL = "This is a second message from level %s.";
+
+    @Test(expected= InvocationTargetException.class)
+    public void newInstance() throws Exception {
+        Constructor<MessagesUtils> c = MessagesUtils.class.getDeclaredConstructor();
+        c.setAccessible(true);
+        c.newInstance();
+        fail("MessagesUtils class constructor should be private");
     }
 
     @Test
-    public void addSecondary() {
+    public void primaryTest() {
+
+        String level = LEVEL_PRIMARY;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "secondary";
-        MessagesUtils.addSecondary(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addPrimaryMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addPrimaryMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addPrimaryMessage(getCommonMessage(level));
+        MessagesUtils.addPrimaryPropertyMessage(FIRST, level);
+        MessagesUtils.addPrimaryPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
+
     }
 
     @Test
-    public void addSuccess() {
+    public void secondaryTest() {
+
+        String level = LEVEL_SECONDARY;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "success";
-        MessagesUtils.addSuccess(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addSecondaryMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addSecondaryMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addSecondaryMessage(getCommonMessage(level));
+        MessagesUtils.addSecondaryPropertyMessage(FIRST, level);
+        MessagesUtils.addSecondaryPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
     }
 
     @Test
-    public void addDanger() {
+    public void successTest() {
+
+        String level = LEVEL_SUCCESS;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "danger";
-        MessagesUtils.addDanger(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addSuccessMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addSuccessMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addSuccessMessage(getCommonMessage(level));
+        MessagesUtils.addSuccessPropertyMessage(FIRST, level);
+        MessagesUtils.addSuccessPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
+
     }
 
     @Test
-    public void addWarning() {
+    public void dangerTest() {
+
+        String level = LEVEL_DANGER;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "warning";
-        MessagesUtils.addWarning(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addDangerMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addDangerMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addDangerMessage(getCommonMessage(level));
+        MessagesUtils.addDangerPropertyMessage(FIRST, level);
+        MessagesUtils.addDangerPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
     }
 
     @Test
-    public void addInfo() {
+    public void warningTest() {
+
+        String level = LEVEL_WARNING;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "info";
-        MessagesUtils.addInfo(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addWarningMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addWarningMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addWarningMessage(getCommonMessage(level));
+        MessagesUtils.addWarningPropertyMessage(FIRST, level);
+        MessagesUtils.addWarningPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
     }
 
     @Test
-    public void addLight() {
+    public void infoTest() {
+
+        String level = LEVEL_INFO;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "light";
-        MessagesUtils.addLight(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addInfoMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addInfoMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addInfoMessage(getCommonMessage(level));
+        MessagesUtils.addInfoPropertyMessage(FIRST, level);
+        MessagesUtils.addInfoPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
     }
 
     @Test
-    public void addDark() {
+    public void lightTest() {
+
+        String level = LEVEL_LIGHT;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "dark";
-        MessagesUtils.addDark(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addLightMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addLightMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addLightMessage(getCommonMessage(level));
+        MessagesUtils.addLightPropertyMessage(FIRST, level);
+        MessagesUtils.addLightPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
     }
 
     @Test
-    public void addMuted() {
+    public void darkTest() {
+
+        String level = LEVEL_DARK;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "muted";
-        MessagesUtils.addMuted(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addDarkMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addDarkMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addDarkMessage(getCommonMessage(level));
+        MessagesUtils.addDarkPropertyMessage(FIRST, level);
+        MessagesUtils.addDarkPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
     }
 
     @Test
-    public void addWhite() {
+    public void mutedTest() {
+
+        String level = LEVEL_MUTED;
+
+        // Clear previous test
         MessagesUtils.clear();
-        String level = "white";
-        MessagesUtils.addWhite(new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addMutedMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addMutedMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addMutedMessage(getCommonMessage(level));
+        MessagesUtils.addMutedPropertyMessage(FIRST, level);
+        MessagesUtils.addMutedPropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
     }
 
     @Test
-    public void addCustom() {
+    public void whiteTest() {
+
+        String level = LEVEL_WHITE;
+
+        // Clear previous test
         MessagesUtils.clear();
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addWhiteMessage(SIMPLE_MESSAGE);
+        MessagesUtils.addWhiteMessage(FORMATTED_MESSAGE, level);
+        MessagesUtils.addWhiteMessage(getCommonMessage(level));
+        MessagesUtils.addWhitePropertyMessage(FIRST, level);
+        MessagesUtils.addWhitePropertyMessage(getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
+    }
+
+    @Test
+    public void customTest() {
+
         String level = "custom";
-        MessagesUtils.add(level, new ClassMessage(THIS_IS_MESSAGE, level));
-        assertMessage(level);
+
+        // Clear previous test
+        MessagesUtils.clear();
+
+        // Set locale
+        MessagesUtils.withLocale(LOCALE_ENGLISH);
+
+        // Add messages
+        MessagesUtils.addMessage(level, SIMPLE_MESSAGE);
+        MessagesUtils.addMessage(level, FORMATTED_MESSAGE, level);
+        MessagesUtils.addMessage(level, getCommonMessage(level));
+        MessagesUtils.addPropertyMessage(level, FIRST, level);
+        MessagesUtils.addPropertyMessage(level, getCommonPropertyMessage(level));
+
+        assertMessagesLevels(level);
+    }
+
+    @Test(expected = MissingResourceException.class)
+    public void bundleNotFoundTest() {
+        MessagesUtils.clear();
+        MessagesUtils.withBundle("notFound");
+        MessagesUtils.withLocale(LOCALE_SPANISH);
+        MessagesUtils.addPropertyMessage("notFound", "notFound");
     }
 
     @Test
-    public void addTwoCustom() {
+    public void otherBundle() {
         MessagesUtils.clear();
-        String level = "custom";
-        MessagesUtils.add(level, new ClassMessage(THIS_IS_MESSAGE, level));
-        MessagesUtils.add(level, new ClassMessage("Other message"));
-        Map<String, List<String>> messages = MessagesUtils.messagesFormated();
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertEquals(2, messages.get(level).size());
+        MessagesUtils.withBundle("i18n/other");
+        MessagesUtils.addPropertyMessage("other, ","message.key", "más");
+
+        Map<String, List<String>> messages = MessagesUtils.messages();
+        assertEquals("Este es otro mensaje más.", messages.values().iterator().next().get(0));
+
     }
 
-    @Test
-    public void bundleDefault() {
-        MessagesUtils.clear();
-        String level = "bundle";
-        MessagesUtils.add(level, new ClassMessage(BUNDLE_KEY, level));
-        Map<String, List<String>> messages = MessagesUtils.messagesBundle();
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertTrue(messages.containsKey(level));
-        assertEquals(String.format(THIS_IS_MESSAGE, level), messages.get(level).get(0));
+    private Message getCommonMessage(String level) {
+        return new Message() {
+            @Override
+            public String getMessage() {
+                return FROM_CLASS_MESSAGE_LEVEL;
+            }
+
+            @Override
+            public Object[] getArgs() {
+                return new Object[] { level };
+            }
+        };
     }
 
-    @Test
-    public void bundleDefaultSpanish() {
-        MessagesUtils.clear();
-        String level = "bundleSpanish";
-        MessagesUtils.add(level, new ClassMessage(BUNDLE_KEY, level));
-        Map<String, List<String>> messages = MessagesUtils.messagesBundle(Locale.forLanguageTag("es"));
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertTrue(messages.containsKey(level));
-        assertEquals("Este es un mensaje bundleSpanish.", messages.get(level).get(0));
+    private Message getCommonPropertyMessage(String level) {
+        return new Message() {
+            @Override
+            public String getMessage() {
+                return SECOND;
+            }
+
+            @Override
+            public Object[] getArgs() {
+                return new Object[] { level };
+            }
+        };
     }
 
-    @Test
-    public void otherBundleDefault() {
-        MessagesUtils.clear();
-        String level = "otherBundle";
-        MessagesUtils.add(level, new ClassMessage(BUNDLE_KEY, level));
-        Map<String, List<String>> messages = MessagesUtils.messagesBundle("i18n/other");
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertTrue(messages.containsKey(level));
-        assertEquals("This is other otherBundle message.", messages.get(level).get(0));
+    private void assertMessagesLevels(String level) {
+        // Get added messages
+        Map<String, List<String>> messages = MessagesUtils.messages();
+
+        // Checks
+        assertFalse("Messages found.", messages.isEmpty());
+        assertEquals("One level of messages.", 1, messages.size());
+        assertEquals("Expected messages.", 5, messages.get(level).size());
+        assertThat(messages.get(level), is(messagesExpected(level)));
     }
 
-    @Test
-    public void otherBundleDefaultSpanish() {
-        MessagesUtils.clear();
-        String level = "otherBundleSpanish";
-        MessagesUtils.add(level, new ClassMessage(BUNDLE_KEY, level));
-        Map<String, List<String>> messages = MessagesUtils.messagesBundle("i18n/other", Locale.forLanguageTag("es"));
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertTrue(messages.containsKey(level));
-        assertEquals("Este es otro mensaje otherBundleSpanish.", messages.get(level).get(0));
-    }
-
-    @Test
-    public void messageLocale() {
-        MessagesUtils.clear();
-        String level = "messageLocale";
-        MessagesUtils.add(level, new ClassMessage(THIS_IS_MESSAGE, level));
-        Map<String, List<String>> messages = MessagesUtils.messagesFormated(Locale.ENGLISH);
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertTrue(messages.containsKey(level));
-        assertEquals(String.format(THIS_IS_MESSAGE, level), messages.get(level).get(0));
-    }
-
-    @Test
-    public void messages() {
-        MessagesUtils.clear();
-        String level = "messageLocale";
-        MessagesUtils.add(level, new ClassMessage(THIS_IS_MESSAGE, level));
-        Map<String, List<Message>> messages = MessagesUtils.messages();
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertTrue(messages.containsKey(level));
-        assertEquals(THIS_IS_MESSAGE, messages.get(level).get(0).getMessage());
-        assertArrayEquals(new Object[]{level}, messages.get(level).get(0).getArgs());
-    }
-
-    private void assertMessage(String level) {
-        Map<String, List<String>> messages = MessagesUtils.messagesFormated();
-        assertFalse(messages.isEmpty());
-        assertEquals(1, messages.size());
-        assertTrue(messages.containsKey(level));
-        assertEquals(String.format(THIS_IS_MESSAGE, level), messages.get(level).get(0));
+    private List<String> messagesExpected(String level) {
+        List<String> messagesExpected = new ArrayList<>();
+        messagesExpected.add(SIMPLE_MESSAGE);
+        messagesExpected.add(String.format(FORMATTED_MESSAGE, level));
+        messagesExpected.add(String.format(FROM_CLASS_MESSAGE_LEVEL, level));
+        messagesExpected.add(String.format(THIS_IS_FIRST_MESSAGE_FROM_LEVEL, level));
+        messagesExpected.add(String.format(THIS_IS_A_SECOND_MESSAGE_FROM_LEVEL, level));
+        return messagesExpected;
     }
 
 }
