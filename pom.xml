@@ -8,6 +8,10 @@
     <artifactId>messages-utils</artifactId>
     <version>1.0.0</version>
 
+    <name>Messages Utils</name>
+    <url>https://github.com/jfermat/messages-utils</url>
+    <description>Sets and gets all the added messages listed by level.</description>
+
     <scm>
         <connection>git@github.com:jfermat/messages-utils.git</connection>
         <developerConnection>git@github.com:jfermat/messages-utils.git</developerConnection>
