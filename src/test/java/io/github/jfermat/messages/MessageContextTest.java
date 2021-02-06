@@ -61,6 +61,9 @@ public class MessageContextTest {
         Assert.assertEquals(MESSAGE, message.getMessage());
         Assert.assertArrayEquals(ARGS, message.getArgs());
 
+        context.addPrimaryMessage(CATEGORY, "other message");
+        Assert.assertEquals(2, context.messages().get(entry.getKey()).size());
+
     }
 
     @Test

@@ -73,11 +73,4 @@ public final class MessageBox {
         return Objects.hash(category, severity);
     }
 
-    @Override
-    public String toString() {
-        return "MessageBox{" +
-                "category='" + category + '\'' +
-                ", severity='" + severity + '\'' +
-                '}';
-    }
 }

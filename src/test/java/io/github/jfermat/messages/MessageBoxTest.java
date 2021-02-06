@@ -46,6 +46,7 @@ public class MessageBoxTest {
         MessageBox messageBoxOne = new MessageBox("category", "severity");
         MessageBox messageBoxTwo = new MessageBox("category", "severity");
 
+        Assert.assertEquals(messageBoxOne, messageBoxOne);
         Assert.assertEquals(messageBoxOne, messageBoxTwo);
         Assert.assertNotEquals(messageBoxOne, null);
         Assert.assertNotEquals(messageBoxOne, "false");

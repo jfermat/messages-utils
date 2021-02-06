@@ -444,11 +444,7 @@ public final class MessageContext {
      */
     public void addMessage(String category, String severity, Message message) {
         MessageBox messageBox = new MessageBox(category, severity);
-        if (!messagesBoxed.containsKey(messageBox)) {
-            messagesBoxed.put(messageBox, new ArrayList<>());
-        }
-        messagesBoxed.get(messageBox).add(message);
-
+        messagesBoxed.computeIfAbsent(messageBox, k -> new ArrayList<>()).add(message);
     }
 
     /**
