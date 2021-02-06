@@ -37,7 +37,7 @@ Add this dependency to your project's build file:
 compile "io.github.jfermat:messages-utils:2.0.0"
 ```
 
-##Getting Started
+## Getting Started
 
 Please follow the [installation](#installation) instruction and execute the following Java code:
 
@@ -132,6 +132,6 @@ public class MessagesUtilsExample {
 }
 ```
 
-##Documentation
+## Documentation
 
 Javadoc: https://jfermat.github.io/docs/messages-utils
