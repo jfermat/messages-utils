@@ -24,7 +24,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>io.github.jfermat</groupId>
   <artifactId>messages-utils</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -34,7 +34,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "io.github.jfermat:messages-utils:1.0.0"
+compile "io.github.jfermat:messages-utils:2.0.0"
 ```
 
 ##Getting Started
@@ -43,59 +43,40 @@ Please follow the [installation](#installation) instruction and execute the foll
 
 ```java
 import io.github.jfermat.messages.Message;
+import io.github.jfermat.messages.MessageBox;
+import io.github.jfermat.messages.MessageContext;
 import io.github.jfermat.messages.MessagesUtils;
 
-import java.util.Locale;
+import java.util.List;
+import java.util.Map;
 
 public class MessagesUtilsExample {
 
-    /*
-        i18n/messages_en.properties content:
-        message.simple = This is a simple property message.
-        message.simple.formated = This is a simple property message.
-        message.class = This is a class message.
-     */
-    public static void main(String... args) {
+    public static void main(String[] args) {
 
-        // Sets the bundle that will be used to do the translation when a property is passed to it.
-        // The default bundle is 'messages'.
-        MessagesUtils.withBundle("i18n/messages");
+        MessageContext context = MessagesUtils.defaultContext();
 
-        // Set the language to be used for translation when a property is passed to you.
-        // The default locale is the system locale.
-        MessagesUtils.withLocale(Locale.ENGLISH);
+        context.addPrimaryMessage("This is a primary message uncategorized in the default context.");
 
-        // Add a simple information message.
-        MessagesUtils.addInfoMessage("Add a simple information message.");
-        // Information message added: Add a simple information message.
+        context.addSecondaryMessage("Messages", "This is a secondary severity message in the default context in the Messages category.");
 
-        // Add a simple information message formated.
-        MessagesUtils.addInfoMessage("This is %s message formated.", "information");
-        // Information message added: This is information message formated.
+        Map<MessageBox, List<Message>> messagesDefaultContext = context.messages();
 
-        // Add a simple information message formated.
-        MessagesUtils.addInfoPropertyMessage("message.simple");
-        // Information message added: This is a simple property message.
+        /* messagesDefaultContext value:
+            MessageBox{category='Messages', severity='secondary'} = [
+                Message{message='This is a secondary severity message in the default context in the Messages category.', args='{}'}
+            ],
+            MessageBox{category='null', severity='primary'} = [
+                Message{message='This is a primary message uncategorized in the default context.', args='{}'}
+            ]
+         */
 
-        // Add property message from interface io.github.jfermat.messages.Message
-        MessagesUtils.addInfoMessage(new Message() {
+        MessageContext otherContext = MessagesUtils.context("other");
+
+        otherContext.addInfoMessage(new Message() {
             @Override
             public String getMessage() {
-                return "Error %s.";
-            }
-
-            @Override
-            public Object[] getArgs() {
-                return new Object[]{"404"};
-            }
-        });
-        // Information message added: Error 404.
-
-        // Add property message from interface io.github.jfermat.messages.Message
-        MessagesUtils.addWarningPropertyMessage(new Message() {
-            @Override
-            public String getMessage() {
-                return "message.class";
+                return "This is a info message uncategorized in the default context.";
             }
 
             @Override
@@ -103,18 +84,54 @@ public class MessagesUtilsExample {
                 return new Object[0];
             }
         });
-        // Information message added: This is a class message.
 
-        // Gets all the added messages listed by level.
-        MessagesUtils.messages();
-        // Return:
-        // ** Level: info **
-        // - Add a simple information message.
-        // - This is information message formated.
-        // - This is a simple property message.
-        // - Error 404.
-        // ** Level: warning **
-        // - This is a class message.
+        otherContext.addDangerMessage("Messages", new Message() {
+            @Override
+            public String getMessage() {
+                return "This is a info message uncategorized in the default context.";
+            }
+
+            @Override
+            public Object[] getArgs() {
+                return new Object[0];
+            }
+        });
+
+        Map<MessageBox, List<Message>> messagesOtherContext = context.messages();
+
+        /* messagesOtherContext value:
+            MessageBox{category='Messages', severity='secondary'} = [
+                Message{message='This is a info message uncategorized in the default context.', args='{}'}
+            ],
+            MessageBox{category='null', severity='primary'} = [
+                Message{message='This is a info message uncategorized in the default context.', args='{}'}
+            ]
+         */
+
+        Map<String, MessageContext> allMessages = MessagesUtils.messages();
+        /* allMessages value:
+            "default" -> {
+                MessageBox{category='Messages', severity='secondary'} = [
+                    Message{message='This is a secondary severity message in the default context in the Messages category.', args='{}'}
+                ],
+                MessageBox{category='null', severity='primary'} = [
+                    Message{message='This is a primary message uncategorized in the default context.', args='{}'}
+                ]
+            },
+            "other" -> {
+                MessageBox{category='Messages', severity='secondary'} = [
+                    Message{message='This is a info message uncategorized in the default context.', args='{}'}
+                ],
+                MessageBox{category='null', severity='primary'} = [
+                    Message{message='This is a info message uncategorized in the default context.', args='{}'}
+                ]
+            }
+         */
+
     }
 }
 ```
+
+##Documentation
+
+Javadoc: https://jfermat.github.io/docs/messages-utils

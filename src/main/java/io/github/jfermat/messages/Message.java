@@ -1,5 +1,5 @@
 /*
- * Copyright (c)2021. Jordi Ferré Matamaoros. All rights reserved.
+ * Copyright (c)2021. Jordi Ferré Matamoros. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,16 @@ package io.github.jfermat.messages;
  * The interface Message.
  */
 public interface Message {
+
     /**
-     * Gets message.
+     * Get message.
      *
      * @return the message
      */
     String getMessage();
 
     /**
-     * Get args object [ ].
+     * Get arguments.
      *
      * @return the object [ ]
      */
